@@ -35,7 +35,6 @@ $conn = mysqli_connect($servername, $username, $password,$dbname);
 if(!$conn){
     die("sorry we failed to connect".mysqli_connect_error());
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -99,19 +98,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO crud_tb (title, description) VALUES ('$title', '$description')";
         $result = mysqli_query($conn, $sql);
         if ($result) {
-            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> Your note has been inserted successfully.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>';
+            // Redirect after successful insertion
+            header("Location: /Crud/crud-op.php?success=1");
+            exit();
         } else {
             echo "The record was not inserted successfully: " . mysqli_error($conn);
         }
     } else {
-        echo "Connection is failed". mysqli_error($conn);
+        echo "Connection failed: " . mysqli_error($conn);
     }
 }
 
-
+// Display success message if redirected with a success parameter
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> Your note has been inserted successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+}
 ?>
 
         <div class="container my-4">
@@ -166,9 +170,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 
+<!-- Edit -->
+
+<?php
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    
+}
+?>
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content p-4">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit this Note</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <form id="editForm" method="POST" action="crud-op.php">
+    <input type="hidden" id="editId" name="snoEdit">
+    <div class="mb-3">
+        <label for="editTitle" class="form-label">Note Title</label>
+        <input type="text" class="form-control" id="title" name="title">
+    </div>
+    <div class="mb-3">
+        <label for="editDescription" class="form-label">Note Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    </div>
+    <hr class="mt-4">
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update Note</button>
+    </div>
+    </form>
+    </div>
+    </div>
+</div>
 
 
 
@@ -194,7 +251,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         let table = new DataTable('#myTable');
     </script>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.edit').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            let tr = e.target.closest('tr');
 
+            let sno = tr.querySelector('th').innerText.trim();
+            let title = tr.querySelectorAll('td')[0]?.innerText.trim();
+            let description = tr.querySelectorAll('td')[1]?.innerText.trim();
+
+            // Populate the modal inputs
+            document.getElementById('editId').value = sno; // Assign sno to hidden field
+            document.getElementById('edittitle').value = title;
+            document.getElementById('editdescription').value = description;
+
+            let editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editModal.show();
+        });
+    });
+});
+    </script>
 
 
 

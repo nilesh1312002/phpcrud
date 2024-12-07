@@ -191,10 +191,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         ?>
 
-        
-
-
-
 
         <?php
 if (isset($_GET['insert']) && $_GET['insert'] == 'success'){
@@ -204,7 +200,6 @@ if (isset($_GET['insert']) && $_GET['insert'] == 'success'){
         </div>';
 }
 ?>
-
 
         <div class="container my-4">
             <h2>Add a Note</h2>
