@@ -118,24 +118,22 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 }
 ?>
 
-        <div class="container my-4">
-            <h2>Add a Note</h2>
-            <form action="/Crud/crud-op.php" method="post">
-                <input type="hidden" name="snoEdit" id="snoEdit">
-                <div class="mb-3">
-                <label for="Title" class="form-label">Note Title</label>
-                <input type="text" class="form-control" id="title" name="title" required aria-describedby="emailHelp">
-                </div>
+    <div class="container my-4">
+        <h2>Add a Note</h2>
+<form action="/Crud/crud-op.php" method="post">
+<input type="hidden" id="editSno" name="snoEdit">
+<div class="mb-3">
+    <label for="editTitle" class="form-label">Note Title</label>
+    <input type="text" class="form-control" id="editTitle" name="title" required>
+</div>
+<div class="mb-3">
+    <label for="editDescription" class="form-label">Note Description</label>
+    <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
+</div>
 
-                <div class="formgroup">
-                <label for="desc">Note Description</label>
-                <div class="form-floating">
-                    <textarea class="form-control" required placeholder="Leave a comment here" id="description" name="description" style="height: 100px"></textarea>
-                    
-                </div>
-            </div>
-                <button type="submit" class="btn btn-primary my-3">Add Note</button>
-            </form>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
         </div>
 
 
@@ -173,26 +171,36 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 <!-- Edit -->
 
 <?php
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['snoEdit']) && !empty($_POST['snoEdit'])) {
+        // Update operation
+        $sno = intval($_POST['snoEdit']);
+        $title = mysqli_real_escape_string($conn, $_POST['title']);
+        $description = mysqli_real_escape_string($conn, $_POST['description']);
+
+        $sql = "UPDATE crud_tb SET title = '$title', description = '$description' WHERE sno = $sno";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            // Redirect after successful update
+            header("Location: /Crud/crud-op.php?update=1");
+            exit();
+        } else {
+            echo "The record was not updated successfully: " . mysqli_error($conn);
+        }
+    }
 }
+
+
+if (isset($_GET['update']) && $_GET['update'] == 1) {
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> Your note has been updated successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+}
+
+
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -200,32 +208,32 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-    <div class="modal-content p-4">
-    <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit this Note</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-    <form id="editForm" method="POST" action="crud-op.php">
-    <input type="hidden" id="editId" name="snoEdit">
-    <div class="mb-3">
-        <label for="editTitle" class="form-label">Note Title</label>
-        <input type="text" class="form-control" id="title" name="title">
-    </div>
-    <div class="mb-3">
-        <label for="editDescription" class="form-label">Note Description</label>
-        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-    </div>
-    <hr class="mt-4">
-    </div>
-    <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Update Note</button>
-    </div>
-    </form>
-    </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editModalLabel">Edit this Note</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="POST" action="crud-op.php">
+                    <input type="hidden" id="editSno" name="snoEdit">
+                    <div class="mb-3">
+                        <label for="editTitle" class="form-label">Note Title</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Note Description</label>
+                        <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Note</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
 
 
 
@@ -252,25 +260,28 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     </script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.edit').forEach((button) => {
         button.addEventListener('click', (e) => {
-            let tr = e.target.closest('tr');
+            const tr = e.target.closest('tr');
+            const sno = tr.querySelector('th').innerText.trim();
+            const title = tr.querySelectorAll('td')[0].innerText.trim();
+            const description = tr.querySelectorAll('td')[1].innerText.trim();
 
-            let sno = tr.querySelector('th').innerText.trim();
-            let title = tr.querySelectorAll('td')[0]?.innerText.trim();
-            let description = tr.querySelectorAll('td')[1]?.innerText.trim();
+            // Populate modal fields
+            document.getElementById('editSno').value = sno; // Set snoEdit for update
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDescription').value = description;
 
-            // Populate the modal inputs
-            document.getElementById('editId').value = sno; // Assign sno to hidden field
-            document.getElementById('edittitle').value = title;
-            document.getElementById('editdescription').value = description;
-
-            let editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            // Show modal
+            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
             editModal.show();
         });
     });
 });
+
+
+
     </script>
 
 
