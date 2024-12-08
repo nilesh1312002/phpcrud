@@ -124,17 +124,17 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 <input type="hidden" id="editSno" name="snoEdit">
 <div class="mb-3">
     <label for="editTitle" class="form-label">Note Title</label>
-    <input type="text" class="form-control" id="editTitle" name="title" required>
+    <input type="text" class="form-control" id="editTitle"  name="title" required>
 </div>
 <div class="mb-3">
     <label for="editDescription" class="form-label">Note Description</label>
-    <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
+    <textarea class="form-control" required placeholder="Leave a comment here" id="description" rows="sno"  name="description" style="height: 100px"></textarea>
 </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-        </div>
+    </div>
 
 
 <div class="container">
@@ -218,11 +218,11 @@ if (isset($_GET['update']) && $_GET['update'] == 1) {
                     <input type="hidden" id="editSno" name="snoEdit">
                     <div class="mb-3">
                         <label for="editTitle" class="form-label">Note Title</label>
-                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                        <input type="text" class="form-control" id="editTitle"  name="title" required>
                     </div>
                     <div class="mb-3">
                         <label for="editDescription" class="form-label">Note Description</label>
-                        <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
+                        <textarea class="form-control" id="editDescription" name="description" rows="sno" required></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
