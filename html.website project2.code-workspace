@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../Users/Nilesh/Documents/Project HTML and CSS/HTML CSS2/HTML CSS/html.website project2"
+		},
+		{
+			"path": "../php-practice"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "php-practice"
+	}
+}
