@@ -5,8 +5,6 @@ $username = "root";
 $password = "";
 $dbname = "crud_records";
 
-
-
 $delete = false;
 // Establish connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -19,16 +17,10 @@ if (isset($_GET['delete'])) {
     $sno = intval($_GET['delete']); // Sanitize input
     $sql = "DELETE FROM crud_tb WHERE sno = $sno";
     $result = mysqli_query($conn, $sql);
-    $delete = true;
-        header("Location: crud-op.php");
-        exit();
-
-        }
-        else{
-            echo"";
-        }
-    
-
+    if ($result) {
+        $delete = true;
+    }
+}
 
 // Handle Insert or Update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -81,8 +73,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </nav>
 
 <?php
-
+// Display Alerts
+if ($delete) {
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> Your note has been deleted successfully.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+}
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> Your note has been inserted successfully.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>';
+}
+if (isset($_GET['update']) && $_GET['update'] == 1) {
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> Your note has been updated successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+}
 ?>
+
 <div class="container my-4">
     <h2>Add a Note</h2>
     <form action="crud-op.php" method="POST">
@@ -97,23 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-
-<?php
-if (isset($_GET['success']) && $_GET['success'] == 1) {
-    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> Your note has been inserted successfully.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>';
-}
-if (isset($_GET['update']) && $_GET['update'] == 1) {
-    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Success!</strong> Your note has been updated successfully.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>';
-}
-
-
-?>
 
 <div class="container">
     <table class="table" id="myTable">
